@@ -1,7 +1,7 @@
 package db
 
 import (
-	"golang-mongodb-restful-starter-kit/config"
+	"github.com/thearyanahmed/kloudlabllc/config"
 
 	mgo "gopkg.in/mgo.v2"
 )

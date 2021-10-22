@@ -1,11 +1,11 @@
 package routes
 
 import (
-	api "golang-mongodb-restful-starter-kit/app/handlers"
-	userRepo "golang-mongodb-restful-starter-kit/app/repositories/user"
-	authSrv "golang-mongodb-restful-starter-kit/app/services/auth"
-	userSrv "golang-mongodb-restful-starter-kit/app/services/user"
-	"golang-mongodb-restful-starter-kit/config"
+	api "github.com/thearyanahmed/kloudlabllc/app/handlers"
+	userRepo "github.com/thearyanahmed/kloudlabllc/app/repositories/user"
+	authSrv "github.com/thearyanahmed/kloudlabllc/app/services/auth"
+	userSrv "github.com/thearyanahmed/kloudlabllc/app/services/user"
+	"github.com/thearyanahmed/kloudlabllc/config"
 	"net/http"
 
 	"github.com/gorilla/mux"

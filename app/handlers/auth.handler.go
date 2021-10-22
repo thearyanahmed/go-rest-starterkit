@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
-	"golang-mongodb-restful-starter-kit/app/models"
-	"golang-mongodb-restful-starter-kit/app/services/auth"
-	"golang-mongodb-restful-starter-kit/app/services/jwt"
-	"golang-mongodb-restful-starter-kit/config"
-	"golang-mongodb-restful-starter-kit/utility"
+	"github.com/thearyanahmed/kloudlabllc/app/models"
+	"github.com/thearyanahmed/kloudlabllc/app/services/auth"
+	"github.com/thearyanahmed/kloudlabllc/app/services/jwt"
+	"github.com/thearyanahmed/kloudlabllc/config"
+	"github.com/thearyanahmed/kloudlabllc/utility"
 	"net/http"
 )
 

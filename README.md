@@ -1,7 +1,7 @@
 # kloudlabllc
 
 
-golang-mongodb-restful-starter-kit is a golang restful api starter kit using mongoDB and JWT. It is very useful for beginners.
+github.com/thearyanahmed/kloudlabllc is a golang restful api starter kit using mongoDB and JWT. It is very useful for beginners.
 
 ### Features!
 
@@ -58,13 +58,13 @@ golang-mongodb-restful-starter-kit is a golang restful api starter kit using mon
   
 ### Installation
 
-golang-mongodb-restful-starter-kit requires [Go](https://golang.org/) 1.10+ to run.
+github.com/thearyanahmed/kloudlabllc requires [Go](https://golang.org/) 1.10+ to run.
 
 Install the dependencies and devDependencies and start the server.
 
 ```sh
-$ git clone https://github.com/ypankaj007/golang-mongodb-restful-starter-kit.git
-$ cd golang-mongodb-restful-starter-kit
+$ git clone https://github.com/ypankaj007/github.com/thearyanahmed/kloudlabllc.git
+$ cd github.com/thearyanahmed/kloudlabllc
 $ go run main.go
 ```
 #### Building for source

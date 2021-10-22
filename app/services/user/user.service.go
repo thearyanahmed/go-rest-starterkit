@@ -2,12 +2,12 @@ package user
 
 import (
 	"context"
-	"golang-mongodb-restful-starter-kit/utility"
+	"github.com/thearyanahmed/kloudlabllc/utility"
 
-	model "golang-mongodb-restful-starter-kit/app/models"
-	"golang-mongodb-restful-starter-kit/config"
+	model "github.com/thearyanahmed/kloudlabllc/app/models"
+	"github.com/thearyanahmed/kloudlabllc/config"
 
-	repository "golang-mongodb-restful-starter-kit/app/repositories/user"
+	repository "github.com/thearyanahmed/kloudlabllc/app/repositories/user"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"

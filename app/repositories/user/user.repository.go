@@ -3,8 +3,8 @@ package user
 import (
 	"context"
 
-	model "golang-mongodb-restful-starter-kit/app/models"
-	"golang-mongodb-restful-starter-kit/config"
+	model "github.com/thearyanahmed/kloudlabllc/app/models"
+	"github.com/thearyanahmed/kloudlabllc/config"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"

@@ -1,8 +1,8 @@
 package jwt
 
 import (
-	"golang-mongodb-restful-starter-kit/config"
-	"golang-mongodb-restful-starter-kit/utility"
+	"github.com/thearyanahmed/kloudlabllc/config"
+	"github.com/thearyanahmed/kloudlabllc/utility"
 	"log"
 	"net/http"
 	"strings"

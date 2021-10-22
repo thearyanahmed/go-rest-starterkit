@@ -1,13 +1,12 @@
 package main
 
 import (
-	"golang-mongodb-restful-starter-kit/app/middleware"
-	"golang-mongodb-restful-starter-kit/app/services/jwt"
-	"golang-mongodb-restful-starter-kit/config"
-	"golang-mongodb-restful-starter-kit/db"
-	_ "golang-mongodb-restful-starter-kit/docs"
-	"golang-mongodb-restful-starter-kit/routes"
-	"golang-mongodb-restful-starter-kit/utility"
+	"github.com/thearyanahmed/kloudlabllc/app/middleware"
+	"github.com/thearyanahmed/kloudlabllc/app/services/jwt"
+	"github.com/thearyanahmed/kloudlabllc/config"
+	"github.com/thearyanahmed/kloudlabllc/db"
+	"github.com/thearyanahmed/kloudlabllc/routes"
+	"github.com/thearyanahmed/kloudlabllc/utility"
 
 	"log"
 	"net/http"

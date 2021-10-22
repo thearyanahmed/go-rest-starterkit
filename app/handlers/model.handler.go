@@ -1,6 +1,6 @@
 package handlers
 
-import "golang-mongodb-restful-starter-kit/app/models"
+import "github.com/thearyanahmed/kloudlabllc/app/models"
 
 type errorRes struct {
 	Error    string `json:"error"`

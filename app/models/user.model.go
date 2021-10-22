@@ -1,7 +1,7 @@
 package models
 
 import (
-	"golang-mongodb-restful-starter-kit/utility"
+	"github.com/thearyanahmed/kloudlabllc/utility"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"

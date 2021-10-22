@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"encoding/json"
-	"golang-mongodb-restful-starter-kit/app/models"
-	userSrv "golang-mongodb-restful-starter-kit/app/services/user"
-	"golang-mongodb-restful-starter-kit/utility"
+	"github.com/thearyanahmed/kloudlabllc/app/models"
+	userSrv "github.com/thearyanahmed/kloudlabllc/app/services/user"
+	"github.com/thearyanahmed/kloudlabllc/utility"
 	"net/http"
 )
 
