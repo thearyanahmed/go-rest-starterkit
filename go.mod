@@ -12,6 +12,7 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/rs/cors v1.7.0
 	github.com/stretchr/testify v1.7.0 // indirect
+	github.com/thedevsaddam/govalidator v1.9.10
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22

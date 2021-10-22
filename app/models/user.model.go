@@ -8,7 +8,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// User , definds user model
 type User struct {
 	ID        bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	Name      string        `json:"name,omitempty" bson:"name,omitempty"`
@@ -21,13 +20,11 @@ type User struct {
 	UpdatedAT int64         `json:"updatedAt,omitempty" bson:"updatedAt,omitempty"`
 }
 
-// Credential , definds login credential model
 type Credential struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-// UserUpdate , definds user update model
 type UserUpdate struct {
 	Name     string `json:"name,omitempty" bson:"name,omitempty"`
 	IsActive bool   `json:"isActive,omitempty" bson:"isActive,omitempty"`
@@ -78,17 +75,14 @@ func (u *User) Initialize() error {
 // all errors are related to the fields
 func (u *User) Validate() error {
 
-	// validating name field with retuired, min length 3, max length 25 and no regex check
 	if e := utility.ValidateRequireAndLengthAndRegex(u.Name, true, 3, 25, "", "Name"); e != nil {
 		return e
 	}
 
-	// validating email field with required, min length 5, max length 25 and regex check
 	if e := utility.ValidateRequireAndLengthAndRegex(u.Email, true, 5, 25, `^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`, "Email"); e != nil {
 		return e
 	}
 
-	// validating password field with required, min length 8, max length 25 and regex check
 	if e := utility.ValidateRequireAndLengthAndRegex(u.Password, true, 8, 25, "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$", "Password"); e != nil {
 		return e
 	}

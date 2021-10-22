@@ -67,7 +67,7 @@ func (jt *JwtToken) ProtectedEndpoint(h http.Handler) http.Handler {
 				return []byte(jt.C.JwtSecret), nil
 			})
 			if err != nil || !token.Valid {
-				utility.Response(w, utility.NewHTTPError(utility.Unauthorized, http.StatusUnauthorized))
+				utility.Response(w, utility.NewHTTPError(utility.Unauthorized), http.StatusUnauthorized)
 			} else {
 
 				// Set userId and in context, so that we can access it over the request

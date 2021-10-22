@@ -6,8 +6,6 @@ import (
 	"strconv"
 )
 
-
-
 func ValidateRequireAndLengthAndRegex(value string, isRequired bool, minLength, maxLength int, regex, fieldName string) error {
 
 	length := len(value)
@@ -29,7 +27,7 @@ func ValidateRequireAndLengthAndRegex(value string, isRequired bool, minLength, 
 	}
 
 	if !Re.MatchString(value) { // Regex check
-		return errors.New("Invalid " + fieldName)
+		return errors.New("invalid " + fieldName)
 	}
 
 	return nil
@@ -40,8 +38,8 @@ func ValidateRequireAndLengthAndRegex(value string, isRequired bool, minLength, 
 func NewHTTPError(errorCode string) map[string]interface{} {
 
 	m := make(map[string]interface{})
-	m["error"] = errorCode
-	m["error_description"], _ = errorMessage[errorCode]
+	m["error_code"] = errorCode
+	m["errors"], _ = errorMessage[errorCode]
 
 	return m
 }
@@ -52,7 +50,7 @@ func NewHTTPCustomError(errorCode, errorMsg string) map[string]interface{} {
 
 	m := make(map[string]interface{})
 
-	m["error"] = errorCode
+	m["error_code"] = errorCode
 	m["error_description"] = errorMsg
 
 	return m
