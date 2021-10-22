@@ -7,73 +7,81 @@ import (
 	"golang-mongodb-restful-starter-kit/app/services/jwt"
 	"golang-mongodb-restful-starter-kit/config"
 	"golang-mongodb-restful-starter-kit/utility"
-	"log"
 	"net/http"
 )
 
 // AuthHandler ..
 type AuthHandler struct {
-	au auth.AuthServiceInterface
-	c  *config.Configuration
+	service auth.AuthServiceInterface
+	conf    *config.Configuration
 }
 
 func NewAuthAPI(authSrv auth.AuthServiceInterface, conf *config.Configuration) *AuthHandler {
 	return &AuthHandler{
-		au: authSrv,
-		c:  conf,
+		service: authSrv,
+		conf:    conf,
 	}
 }
-
 
 func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
 	payload := new(signupReq)
 	defer r.Body.Close()
+
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&payload)
+
 	requestUser := &models.User{Name: payload.Name, Email: payload.Email, Password: payload.Password}
 	result := make(map[string]interface{})
+
 	if validateError := requestUser.Validate(); validateError != nil {
-		result = utility.NewHTTPCustomError(utility.BadRequest, validateError.Error(), http.StatusBadRequest)
-		utility.Response(w, result)
+		result = utility.NewHTTPCustomError(utility.BadRequest, validateError.Error())
+		utility.Response(w, result,http.StatusUnprocessableEntity)
 		return
 	}
 
 	requestUser.Initialize()
 
-	if h.au.IsUserAlreadyExists(r.Context(), requestUser.Email) {
-		result = utility.NewHTTPError(utility.UserAlreadyExists, http.StatusBadRequest)
-		utility.Response(w, result)
+	if h.service.IsUserAlreadyExists(r.Context(), requestUser.Email) {
+		result = utility.NewHTTPError(utility.UserAlreadyExists)
+		utility.Response(w, result,http.StatusUnprocessableEntity)
 		return
 	}
-	err := h.au.Create(r.Context(), requestUser)
-	if err != nil {
-		result = utility.NewHTTPError(utility.EntityCreationError, http.StatusBadRequest)
-	} else {
 
-		result = utility.SuccessPayload(nil, "Successfully registered", 201)
+	err := h.service.Create(r.Context(), requestUser)
+
+	if err != nil {
+		result = utility.NewHTTPError(utility.EntityCreationError)
+		utility.Response(w, result,http.StatusBadRequest)
+		return
 	}
-	utility.Response(w, result)
+
+	result = utility.SuccessPayload(nil, "Successfully registered")
+	utility.Response(w, result,http.StatusCreated)
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	credentials := new(models.Credential)
 	defer r.Body.Close()
+
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&credentials)
 
-	user, err := h.au.Login(r.Context(), credentials)
+	user, err := h.service.Login(r.Context(), credentials)
+
 	if err != nil || user == nil {
-		log.Println(err)
-		result := utility.NewHTTPError(utility.Unauthorized, http.StatusBadRequest)
-		utility.Response(w, result)
+
+		result := utility.NewHTTPError(utility.Unauthorized)
+		utility.Response(w, result,http.StatusUnprocessableEntity)
 		return
 	}
-	j := jwt.JwtToken{C: h.c}
+
+	j := jwt.JwtToken{C: h.conf}
+
 	tokenMap, err := j.CreateToken(user.ID.Hex(), user.Role)
+
 	if err != nil {
-		log.Println(err)
-		result := utility.NewHTTPError(utility.InternalError, 501)
-		utility.Response(w, result)
+		result := utility.NewHTTPError(utility.InternalError)
+		utility.Response(w, result,http.StatusInternalServerError)
 		return
 	}
 
@@ -81,6 +89,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		Token: tokenMap["token"],
 		User:  user,
 	}
-	result := utility.SuccessPayload(res, "Successfully loggedIn")
-	utility.Response(w, result)
+
+	result := utility.SuccessPayload(res, "successfully logged In")
+	utility.Response(w, result,http.StatusOK)
 }

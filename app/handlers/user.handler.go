@@ -10,39 +10,44 @@ import (
 
 // UserHandler - handles user request
 type UserHandler struct {
-	us userSrv.UserServiceInterface
+	service userSrv.UserServiceInterface
 }
 
 func NewUserAPI(userService userSrv.UserServiceInterface) *UserHandler {
 	return &UserHandler{
-		us: userService,
+		service: userService,
 	}
 }
 
 func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
-	user, err := h.us.Get(r.Context(), utility.GetLoggedInUserID(r))
+	user, err := h.service.Get(r.Context(), utility.GetLoggedInUserID(r))
 
 	if err != nil {
-		utility.Response(w, utility.NewHTTPError(utility.InternalError, 500))
-	} else {
-		utility.Response(w, utility.SuccessPayload(user, ""))
-	}
-}
-
-func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
-	updaateUser := new(models.UserUpdate)
-	defer r.Body.Close()
-	decoder := json.NewDecoder(r.Body)
-	decoder.Decode(&updaateUser)
-	result := make(map[string]interface{})
-	err := h.us.Update(r.Context(), utility.GetLoggedInUserID(r), updaateUser)
-	if err != nil {
-		result = utility.NewHTTPCustomError(utility.BadRequest, err.Error(), http.StatusBadRequest)
-		utility.Response(w, result)
+		utility.Response(w, utility.NewHTTPError(utility.InternalError),http.StatusInternalServerError)
 		return
 	}
 
-	result = utility.SuccessPayload(nil, "Successfully updated")
-	utility.Response(w, result)
+	utility.Response(w, utility.SuccessPayload(user, ""),http.StatusOK)
+}
+
+func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
+	updatedUser := new(models.UserUpdate)
+
+	defer r.Body.Close()
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.Decode(&updatedUser)
+
+	result := make(map[string]interface{})
+	err := h.service.Update(r.Context(), utility.GetLoggedInUserID(r), updatedUser)
+
+	if err != nil {
+		result = utility.NewHTTPCustomError(utility.BadRequest, err.Error())
+		utility.Response(w, result,http.StatusUnprocessableEntity)
+		return
+	}
+
+	result = utility.SuccessPayload(nil, "successfully updated.")
+	utility.Response(w, result,http.StatusOK)
 
 }

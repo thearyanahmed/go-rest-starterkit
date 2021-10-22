@@ -17,9 +17,12 @@ func Headers(r http.Handler) http.Handler {
 
 // Response will return json response of http
 // This func handle both error a well as success
-func Response(w http.ResponseWriter, payload interface{}) {
+func Response(w http.ResponseWriter, payload interface{}, httpCode int) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	w.WriteHeader(httpCode)
+
 	json.NewEncoder(w).Encode(payload)
 }
 
@@ -32,12 +35,9 @@ func ReadBody(r *http.Request, data interface{}) (interface{}, error) {
 
 func SuccessPayload(data interface{}, message string, args ...int) map[string]interface{} {
 	result := make(map[string]interface{})
+
 	result["data"] = data
 	result["message"] = message
-	if len(args) == 0 {
-		result["code"] = 200
-	} else {
-		result["code"] = args[0]
-	}
+
 	return result
 }
