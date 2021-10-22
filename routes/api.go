@@ -32,5 +32,4 @@ func InitializeRoutes(router *mux.Router, dbSession *mgo.Session, conf *config.C
 	// -------------------------- User APIs ------------------------------------
 	router.HandleFunc(BaseRoute+"/users/me", userAPI.Get).Methods(http.MethodGet)
 	router.HandleFunc(BaseRoute+"/users", userAPI.Update).Methods(http.MethodPut)
-
 }

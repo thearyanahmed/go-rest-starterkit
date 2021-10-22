@@ -17,8 +17,8 @@ type JwtToken struct {
 	C *config.Configuration
 }
 
-// Token ,contains data that will enrypted in JWT token
-// When jwt token will decrypt, token model will returns
+// Token ,contains data that will be encrypted in JWT token
+// When jwt token will decrypt, token model will return
 // Need this model to authenticate and validate resources access by loggedIn user
 type Token struct {
 	ID   string `json:"id"`   // User id
@@ -48,14 +48,15 @@ func (jt *JwtToken) CreateToken(id, role string) (map[string]string, error) {
 // ProtectedEndpoint : authenticate all requests
 // Takes http handler as params and performs authentication by
 // JWT token
-// If everythings looks fine, it reqirect the request to actual hadler,
+// If everything looks fine, it redirects the request to actual handler,
 // otherwise, send unauthorized response
 func (jt *JwtToken) ProtectedEndpoint(h http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		log.Println("middleware", r.URL)
-		if strings.Contains(r.URL.Path, "/auth/") || strings.Contains(r.URL.Path, "/swagger/") {
+
+		if strings.Contains(r.URL.Path, "/auth/") {
 			h.ServeHTTP(w, r)
 		} else {
 			// JWT token from request header
@@ -73,7 +74,7 @@ func (jt *JwtToken) ProtectedEndpoint(h http.Handler) http.Handler {
 				// is some request, we need loggedIn user information
 				context.Set(r, "userId", t.ID) // set loggedIn user id in context
 				context.Set(r, "role", t.Role) // set loggedIn user role in context
-				// Redirest call to original http handler
+				// Redirect call to original http handler
 				h.ServeHTTP(w, r)
 			}
 		}

@@ -11,11 +11,11 @@ import (
 func Headers(r http.Handler) http.Handler {
 	headersOk := handlers.AllowedHeaders([]string{"Authorization"})
 	originsOk := handlers.AllowedOrigins([]string{"*"})
-	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "OPTIONS"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PATCH", "OPTIONS"})
 	return handlers.CORS(headersOk, originsOk, methodsOk)(r)
 }
 
-// Response will return json responce of http
+// Response will return json response of http
 // This func handle both error a well as success
 func Response(w http.ResponseWriter, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")

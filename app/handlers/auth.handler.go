@@ -24,16 +24,7 @@ func NewAuthAPI(authSrv auth.AuthServiceInterface, conf *config.Configuration) *
 	}
 }
 
-// Create godoc
-// @Summary Register user
-// @Description Register user api if not exists
-// @Tags auth
-// @Accept  json
-// @Produce  json
-// @Param   payload     body    signupReq     true        "User Data"
-// @Success 200 {object} basicResponse
-// @Success 200 {object} errorRes
-// @Router /auth/register [post]
+
 func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
 	payload := new(signupReq)
 	defer r.Body.Close()
@@ -64,16 +55,6 @@ func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
 	utility.Response(w, result)
 }
 
-// Login godoc
-// @Summary Login user
-// @Description Login user api with email and password
-// @Tags auth
-// @Accept  json
-// @Produce  json
-// @Param   payload     body    models.Credential     true        "User Data"
-// @Success 200 {object} loginRes
-// @Success 200 {object} errorRes
-// @Router /auth/login [post]
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	credentials := new(models.Credential)
 	defer r.Body.Close()
