@@ -3,7 +3,6 @@ package jwt
 import (
 	"github.com/thearyanahmed/kloudlabllc/config"
 	"github.com/thearyanahmed/kloudlabllc/utility"
-	"log"
 	"net/http"
 	"strings"
 
@@ -54,8 +53,6 @@ func (jt *JwtToken) ProtectedEndpoint(h http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		log.Println("middleware", r.URL)
-
 		if strings.Contains(r.URL.Path, "/auth/") {
 			h.ServeHTTP(w, r)
 		} else {
@@ -67,7 +64,7 @@ func (jt *JwtToken) ProtectedEndpoint(h http.Handler) http.Handler {
 				return []byte(jt.C.JwtSecret), nil
 			})
 			if err != nil || !token.Valid {
-				utility.Response(w, utility.NewHTTPError(utility.Unauthorized), http.StatusUnauthorized)
+				utility.Response(w, utility.NewHTTPError(http.StatusUnauthorized,nil), http.StatusUnauthorized)
 			} else {
 
 				// Set userId and in context, so that we can access it over the request

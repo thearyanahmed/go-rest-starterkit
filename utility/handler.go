@@ -26,6 +26,7 @@ func Response(w http.ResponseWriter, payload interface{}, httpCode int) {
 	json.NewEncoder(w).Encode(payload)
 }
 
+
 func ReadBody(r *http.Request, data interface{}) (interface{}, error) {
 	defer r.Body.Close()
 	decoder := json.NewDecoder(r.Body)

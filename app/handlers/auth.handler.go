@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/thearyanahmed/kloudlabllc/app/models"
 	authRequest "github.com/thearyanahmed/kloudlabllc/app/requests/auth"
 	"github.com/thearyanahmed/kloudlabllc/app/services/auth"
@@ -31,16 +32,36 @@ func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&payload)
 
+	fmt.Println("1 pauload",payload)
+
 	requestUser := &models.User{Name: payload.Name, Email: payload.Email, Password: payload.Password}
 	result := make(map[string]interface{})
 
-	e := authRequest.RegisterUserRequest(r)
+	formData := authRequest.RegisterUserRequest(r)
 
-	if e != nil {
-		result = utility.NewValidationError(e)
+	if formData.HasErrors() {
+		result = utility.NewValidationError(formData.ErrorBag)
 		utility.Response(w, result,http.StatusUnprocessableEntity)
+
+		return
+	} else {
+		fmt.Println(formData)
+		utility.Response(w, formData.Email,http.StatusOK)
+
 		return
 	}
+
+	//if len(e) > 0 {
+	//	result = utility.NewValidationError(e)
+	//	utility.Response(w, result,http.StatusUnprocessableEntity)
+	//
+	//	return
+	//} else {
+	//
+	//	utility.Response(w, payload,http.StatusOK)
+	//
+	//	return
+	//}
 
 	//
 	//if validateError := requestUser.Validate(); validateError != nil {
@@ -63,7 +84,7 @@ func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result = utility.SuccessPayload(nil, "successfully registered")
+	result = utility.SuccessPayload(nil, "successfully registered.")
 	utility.Response(w, result,http.StatusCreated)
 }
 
@@ -102,3 +123,4 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	result := utility.SuccessPayload(res, "successfully logged In")
 	utility.Response(w, result,http.StatusOK)
 }
+
