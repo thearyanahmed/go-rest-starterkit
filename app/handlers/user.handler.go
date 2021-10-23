@@ -23,7 +23,7 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	user, err := h.service.Get(r.Context(), utility.GetLoggedInUserID(r))
 
 	if err != nil {
-		utility.Response(w, utility.NewHTTPError(utility.InternalError),http.StatusInternalServerError)
+		utility.Response(w, utility.NewHTTPError(http.StatusServiceUnavailable,nil),http.StatusInternalServerError)
 		return
 	}
 
@@ -42,7 +42,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	err := h.service.Update(r.Context(), utility.GetLoggedInUserID(r), updatedUser)
 
 	if err != nil {
-		result = utility.NewHTTPCustomError(utility.BadRequest, err.Error())
+		result = utility.NewHTTPError(http.StatusBadRequest, err.Error())
 		utility.Response(w, result,http.StatusUnprocessableEntity)
 		return
 	}

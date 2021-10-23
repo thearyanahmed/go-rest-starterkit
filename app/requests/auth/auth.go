@@ -3,21 +3,20 @@ package auth
 import (
 	"github.com/thedevsaddam/govalidator"
 	"net/http"
+	"net/url"
 )
 
-func RegisterUser(r *http.Request) {
+func RegisterUserRequest(r *http.Request) url.Values {
 	rules := govalidator.MapData{
-		"username": []string{"required", "between:3,8"},
-		"email":    []string{"required", "min:4", "max:20", "email"},
-		"web":      []string{"url"},
-		"phone":    []string{"digits:11"},
-		"agree":    []string{"bool"},
-		"dob":      []string{"date"},
+		"name": []string{"required", "between:3,12"},
+		"email":    []string{"required", "email"},
+		"password":    []string{"required", "between:4,40"},
 	}
 
 	messages := govalidator.MapData{
-		"username": []string{"required:আপনাকে অবশ্যই ইউজারনেম দিতে হবে", "between:ইউজারনেম অবশ্যই ৩-৮ অক্ষর হতে হবে"},
-		"phone":    []string{"digits:ফোন নাম্বার অবশ্যই ১১ নম্বারের হতে হবে"},
+		"name": []string{"required:name is required", "between:username must be between 3 to 12 characters"},
+		"email":    []string{"required:email is required", "email:email must of valid format"},
+		"password":    []string{"required:password is required", "between:password must be between 4 to 40 characters"},
 	}
 
 	opts := govalidator.Options{
@@ -26,6 +25,8 @@ func RegisterUser(r *http.Request) {
 		Messages:        messages, // custom message map (Optional)
 		RequiredDefault: true,     // all the field to be pass the rules
 	}
+
 	v := govalidator.New(opts)
-	e := v.Validate()
+
+	return v.Validate()
 }

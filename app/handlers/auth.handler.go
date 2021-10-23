@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"github.com/thearyanahmed/kloudlabllc/app/models"
+	authRequest "github.com/thearyanahmed/kloudlabllc/app/requests/auth"
 	"github.com/thearyanahmed/kloudlabllc/app/services/auth"
 	"github.com/thearyanahmed/kloudlabllc/app/services/jwt"
 	"github.com/thearyanahmed/kloudlabllc/config"
@@ -33,16 +34,23 @@ func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
 	requestUser := &models.User{Name: payload.Name, Email: payload.Email, Password: payload.Password}
 	result := make(map[string]interface{})
 
-	if validateError := requestUser.Validate(); validateError != nil {
-		result = utility.NewHTTPCustomError(utility.BadRequest, validateError.Error())
+	e := authRequest.RegisterUserRequest(r)
+
+	if e != nil {
+		result = utility.NewValidationError(e)
 		utility.Response(w, result,http.StatusUnprocessableEntity)
 		return
 	}
 
+	//
+	//if validateError := requestUser.Validate(); validateError != nil {
+	//	result = utility.NewHTTPError(utility.BadRequest, validateError.Error())
+	//}
+
 	requestUser.Initialize()
 
 	if h.service.IsUserAlreadyExists(r.Context(), requestUser.Email) {
-		result = utility.NewHTTPError(utility.UserAlreadyExists)
+		result = utility.NewHTTPError(http.StatusUnprocessableEntity,nil)
 		utility.Response(w, result,http.StatusUnprocessableEntity)
 		return
 	}
@@ -50,12 +58,12 @@ func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
 	err := h.service.Create(r.Context(), requestUser)
 
 	if err != nil {
-		result = utility.NewHTTPError(utility.EntityCreationError)
+		result = utility.NewHTTPError(http.StatusUnprocessableEntity,nil)
 		utility.Response(w, result,http.StatusBadRequest)
 		return
 	}
 
-	result = utility.SuccessPayload(nil, "Successfully registered")
+	result = utility.SuccessPayload(nil, "successfully registered")
 	utility.Response(w, result,http.StatusCreated)
 }
 
@@ -70,7 +78,8 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil || user == nil {
 
-		result := utility.NewHTTPError(utility.Unauthorized)
+
+		result := utility.NewHTTPError(http.StatusUnauthorized,nil)
 		utility.Response(w, result,http.StatusUnprocessableEntity)
 		return
 	}
@@ -80,7 +89,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	tokenMap, err := j.CreateToken(user.ID.Hex(), user.Role)
 
 	if err != nil {
-		result := utility.NewHTTPError(utility.InternalError)
+		result := utility.NewHTTPError(http.StatusUnauthorized,nil)
 		utility.Response(w, result,http.StatusInternalServerError)
 		return
 	}

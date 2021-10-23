@@ -2,6 +2,7 @@ package utility
 
 import (
 	"errors"
+	"net/http"
 	"regexp"
 	"strconv"
 )
@@ -35,25 +36,18 @@ func ValidateRequireAndLengthAndRegex(value string, isRequired bool, minLength, 
 
 // NewHTTPError creates error model that will send as http response
 // if any error occurs
-func NewHTTPError(errorCode string) map[string]interface{} {
+func NewHTTPError(errorCode int,errors interface{}) map[string]interface{} {
 
 	m := make(map[string]interface{})
+
 	m["error_code"] = errorCode
-	m["errors"], _ = errorMessage[errorCode]
+	m["errors"] = errors
 
 	return m
 }
 
-// NewHTTPCustomError creates error model that will send as http response
-// if any error occurs
-func NewHTTPCustomError(errorCode, errorMsg string) map[string]interface{} {
-
-	m := make(map[string]interface{})
-
-	m["error_code"] = errorCode
-	m["error_description"] = errorMsg
-
-	return m
+func NewValidationError(errors interface{}) map[string]interface{} {
+	return NewHTTPError(http.StatusUnprocessableEntity,errors)
 }
 
 // Error codes
@@ -68,15 +62,3 @@ const (
 	UnprocessableEntity = "unprocessableEntity"
 	UserAlreadyExists   = "userAlreadyExists"
 )
-
-// Error code with description
-var errorMessage = map[string]string{
-	"invalidUserID":       "invalid user id",
-	"internalError":       "an internal error occurred",
-	"userNotFound":        "user could not be found",
-	"invalidBindingModel": "model could not be bound",
-	"entityCreationError": "could not create entity",
-	"unauthorized":        "an unauthorized access",
-	"userAlreadyExists":   "user already exists",
-	"unprocessableEntity":   "unprocessable entity",
-}
