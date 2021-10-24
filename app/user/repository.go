@@ -2,30 +2,24 @@ package user
 
 import (
 	"context"
-
-	model "github.com/thearyanahmed/kloudlabllc/app/models"
 	"github.com/thearyanahmed/kloudlabllc/config"
-
-	mgo "gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
-// UserRepository , used to perform DB operations
-// Interface contains basic operations on user document
-// So that, db operation can be performed easily
-type UserRepository interface {
+type Repository interface {
 
 	// Create , will perform db operation to save user
 	// Returns modified user and error if occurs
-	Create(context.Context, *model.User) error
+	Create(context.Context, *User) error
 
 	// FindAll , returns all users in the system
 	// It will return error also if occurs
-	FindAll(context.Context) ([]*model.User, error)
+	FindAll(context.Context) ([]*User, error)
 
 	// FindOneById , find the user by the provided id
 	// return matched user and error if any
-	FindOneById(context.Context, string) (*model.User, error)
+	FindOneById(context.Context, string) (*User, error)
 
 	// Update , will update user data by id
 	// return error if any
@@ -33,12 +27,12 @@ type UserRepository interface {
 
 	// Delete , will remove user entry from DB
 	// Return error if any
-	Delete(context.Context, *model.User) error
+	Delete(context.Context, *User) error
 
 	// FindOne , will find one entry of user matched by the query.
 	// Query object is an interface type that can accept any object
 	// return matched user and error if any
-	FindOne(context.Context, interface{}) (*model.User, error)
+	FindOne(context.Context, interface{}) (*User, error)
 
 	IsUserAlreadyExists(context.Context, string) bool
 }
@@ -48,15 +42,15 @@ type UserRepositoryImp struct {
 	config *config.Configuration
 }
 
-func New(db *mgo.Session, c *config.Configuration) UserRepository {
+func NewRepository(db *mgo.Session, c *config.Configuration) Repository {
 	return &UserRepositoryImp{db: db, config: c}
 }
 
-func (service *UserRepositoryImp) Create(ctx context.Context, user *model.User) error {
+func (service *UserRepositoryImp) Create(ctx context.Context, user *User) error {
 	return service.collection().Insert(user)
 }
 
-func (service *UserRepositoryImp) FindAll(ctx context.Context) ([]*model.User, error) {
+func (service *UserRepositoryImp) FindAll(ctx context.Context) ([]*User, error) {
 	return nil, nil
 }
 
@@ -65,19 +59,19 @@ func (service *UserRepositoryImp) Update(ctx context.Context, query, change inte
 	return service.collection().Update(query, change)
 }
 
-func (service *UserRepositoryImp) FindOneById(ctx context.Context, id string) (*model.User, error) {
-	var user model.User
+func (service *UserRepositoryImp) FindOneById(ctx context.Context, id string) (*User, error) {
+	var user User
 	query := bson.M{"_id": bson.ObjectIdHex(id)}
 	e := service.collection().Find(query).Select(bson.M{"password": 0, "salt": 0}).One(&user)
 	return &user, e
 }
 
-func (service *UserRepositoryImp) Delete(ctx context.Context, user *model.User) error {
+func (service *UserRepositoryImp) Delete(ctx context.Context, user *User) error {
 	return nil
 }
 
-func (service *UserRepositoryImp) FindOne(ctx context.Context, query interface{}) (*model.User, error) {
-	var user model.User
+func (service *UserRepositoryImp) FindOne(ctx context.Context, query interface{}) (*User, error) {
+	var user User
 	e := service.collection().Find(query).One(&user)
 	return &user, e
 }

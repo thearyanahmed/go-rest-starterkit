@@ -1,10 +1,8 @@
 package routes
 
 import (
-	api "github.com/thearyanahmed/kloudlabllc/app/handlers"
-	userRepo "github.com/thearyanahmed/kloudlabllc/app/repositories/user"
-	authSrv "github.com/thearyanahmed/kloudlabllc/app/services/auth"
-	userSrv "github.com/thearyanahmed/kloudlabllc/app/services/user"
+	"github.com/thearyanahmed/kloudlabllc/app/auth"
+	"github.com/thearyanahmed/kloudlabllc/app/user"
 	"github.com/thearyanahmed/kloudlabllc/config"
 	"net/http"
 
@@ -17,11 +15,13 @@ var (
 )
 
 func InitializeRoutes(router *mux.Router, dbSession *mgo.Session, conf *config.Configuration) {
-	userRepository := userRepo.New(dbSession, conf)
-	userService := userSrv.New(userRepository)
-	authService := authSrv.New(userRepository)
-	authAPI := api.NewAuthAPI(authService, conf)
-	userAPI := api.NewUserAPI(userService)
+	userRepository := user.NewRepository(dbSession, conf)
+	userService := user.NewService(userRepository)
+	userAPI := user.NewUserAPI(userService)
+
+	authService := auth.NewService(userRepository)
+
+	authAPI := auth.NewAuthAPI(authService, conf)
 
 	// Routes
 

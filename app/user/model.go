@@ -1,4 +1,5 @@
-package models
+package user
+
 
 import (
 	"github.com/thearyanahmed/kloudlabllc/utility"
@@ -18,6 +19,7 @@ type User struct {
 	IsActive  bool          `json:"isActive,omitempty" bson:"isActive,omitempty"`
 	CreatedAT int64         `json:"createdAt,omitempty" bson:"createdAt,omitempty"`
 	UpdatedAT int64         `json:"updatedAt,omitempty" bson:"updatedAt,omitempty"`
+	DeletedAt int64         `json:"deletedAt,omitempty" bson:"deletedAt,omitempty"`
 }
 
 type Credential struct {
@@ -29,16 +31,6 @@ type UserUpdate struct {
 	Name     string `json:"name,omitempty" bson:"name,omitempty"`
 	IsActive bool   `json:"isActive,omitempty" bson:"isActive,omitempty"`
 }
-
-// func UserIndex() mgo.Index {
-// 	return mgo.Index{
-// 		Key:        []string{"email"},
-// 		Unique:     true,
-// 		DropDups:   true,
-// 		Background: true,
-// 		Sparse:     true,
-// 	}
-// }
 
 // ComparePassword , used to compared
 // hashed password with input text password
@@ -67,26 +59,4 @@ func (u *User) Initialize() error {
 	u.IsActive = true
 	u.Role = utility.UserRole
 	return nil
-}
-
-// Validate user fields
-// This function validates user data
-// and return error is any
-// all errors are related to the fields
-func (u *User) Validate() error {
-
-	if e := utility.ValidateRequireAndLengthAndRegex(u.Name, true, 3, 25, "", "Name"); e != nil {
-		return e
-	}
-
-	if e := utility.ValidateRequireAndLengthAndRegex(u.Email, true, 5, 25, `^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`, "Email"); e != nil {
-		return e
-	}
-
-	if e := utility.ValidateRequireAndLengthAndRegex(u.Password, true, 8, 25, "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$", "Password"); e != nil {
-		return e
-	}
-
-	return nil
-
 }

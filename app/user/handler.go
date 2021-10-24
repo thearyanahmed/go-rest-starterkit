@@ -1,25 +1,22 @@
-package handlers
+package user
 
 import (
 	"encoding/json"
-	"github.com/thearyanahmed/kloudlabllc/app/models"
-	userSrv "github.com/thearyanahmed/kloudlabllc/app/services/user"
 	"github.com/thearyanahmed/kloudlabllc/utility"
 	"net/http"
 )
 
-// UserHandler - handles user request
-type UserHandler struct {
-	service userSrv.UserServiceInterface
+type Handler struct {
+	service ServiceInterface
 }
 
-func NewUserAPI(userService userSrv.UserServiceInterface) *UserHandler {
-	return &UserHandler{
+func NewUserAPI(userService ServiceInterface) *Handler {
+	return &Handler{
 		service: userService,
 	}
 }
 
-func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	user, err := h.service.Get(r.Context(), utility.GetLoggedInUserID(r))
 
 	if err != nil {
@@ -30,8 +27,8 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	utility.Response(w, utility.SuccessPayload(user, ""),http.StatusOK)
 }
 
-func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
-	updatedUser := new(models.UserUpdate)
+func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
+	updatedUser := new(UserUpdate)
 
 	defer r.Body.Close()
 
@@ -51,3 +48,4 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	utility.Response(w, result,http.StatusOK)
 
 }
+

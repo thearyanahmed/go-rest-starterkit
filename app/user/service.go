@@ -4,36 +4,33 @@ import (
 	"context"
 	"github.com/thearyanahmed/kloudlabllc/utility"
 
-	model "github.com/thearyanahmed/kloudlabllc/app/models"
 	"github.com/thearyanahmed/kloudlabllc/config"
-
-	repository "github.com/thearyanahmed/kloudlabllc/app/repositories/user"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
-type UserServiceInterface interface {
-	Update(context.Context, string, *model.UserUpdate) error
-	Get(context.Context, string) (*model.User, error)
+type ServiceInterface interface {
+	Update(context.Context, string, *UserUpdate) error
+	Get(context.Context, string) (*User, error)
 }
 
 // UserService , implements UserService
 // and perform user related business logics
 type UserService struct {
 	db         *mgo.Session
-	repository repository.UserRepository
+	repository Repository
 	config     *config.Configuration
 }
-
-// New function will initialize UserService
-func New(userRepo repository.UserRepository) UserServiceInterface {
+//
+//// New function will initialize UserService
+func NewService(userRepo Repository) ServiceInterface {
 	return &UserService{repository: userRepo}
 }
 
 // Update function will update the user info
 // return error if any
-func (service *UserService) Update(ctx context.Context, id string, user *model.UserUpdate) error {
+func (service *UserService) Update(ctx context.Context, id string, user *UserUpdate) error {
 	query := bson.M{"_id": bson.ObjectIdHex(id), "isActive": true}
 	CustomBson := &utility.CustomBson{}
 	change, err := CustomBson.Set(user)
@@ -45,6 +42,6 @@ func (service *UserService) Update(ctx context.Context, id string, user *model.U
 
 // Get function will find user by id
 // return user and error if any
-func (service *UserService) Get(ctx context.Context, id string) (*model.User, error) {
+func (service *UserService) Get(ctx context.Context, id string) (*User, error) {
 	return service.repository.FindOneById(ctx, id)
 }

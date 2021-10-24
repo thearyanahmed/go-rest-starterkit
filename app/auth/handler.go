@@ -1,31 +1,28 @@
-package handlers
+package auth
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/thearyanahmed/kloudlabllc/app/models"
-	authRequest "github.com/thearyanahmed/kloudlabllc/app/requests/auth"
-	"github.com/thearyanahmed/kloudlabllc/app/services/auth"
 	"github.com/thearyanahmed/kloudlabllc/app/services/jwt"
+	"github.com/thearyanahmed/kloudlabllc/app/user"
 	"github.com/thearyanahmed/kloudlabllc/config"
 	"github.com/thearyanahmed/kloudlabllc/utility"
 	"net/http"
 )
 
-// AuthHandler ..
-type AuthHandler struct {
-	service auth.AuthServiceInterface
+type Handler struct {
+	service ServiceInterface
 	conf    *config.Configuration
 }
 
-func NewAuthAPI(authSrv auth.AuthServiceInterface, conf *config.Configuration) *AuthHandler {
-	return &AuthHandler{
+func NewAuthAPI(authSrv ServiceInterface, conf *config.Configuration) *Handler {
+	return &Handler{
 		service: authSrv,
 		conf:    conf,
 	}
 }
 
-func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	//payload := new(signupReq)
 	//defer r.Body.Close()
 	//
@@ -37,7 +34,7 @@ func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
 	//requestUser := &models.User{Name: payload.Name, Email: payload.Email, Password: payload.Password}
 	result := make(map[string]interface{})
 
-	userData, err := authRequest.RegisterUserRequest(r)
+	userData, err := registerUserRequest(r)
 
 	fmt.Println(userData)
 
@@ -91,8 +88,8 @@ func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
 	//utility.Response(w, result,http.StatusCreated)
 }
 
-func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-	credentials := new(models.Credential)
+func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
+	credentials := new(user.Credential)
 	defer r.Body.Close()
 
 	decoder := json.NewDecoder(r.Body)
@@ -118,12 +115,14 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res := &loginRes{
-		Token: tokenMap["token"],
-		User:  user,
+	res := struct {
+		Message string
+		TokenMap map[string]string
+	}{
+		Message: "Implement me",
+		TokenMap: tokenMap,
 	}
 
-	result := utility.SuccessPayload(res, "successfully logged In")
+	result := utility.SuccessPayload(res, "successfully logged in")
 	utility.Response(w, result,http.StatusOK)
 }
-

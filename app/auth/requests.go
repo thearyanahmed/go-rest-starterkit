@@ -1,9 +1,6 @@
 package auth
 
 import (
-	"fmt"
-	_ "fmt"
-	_ "github.com/thearyanahmed/kloudlabllc/app/requests"
 	"github.com/thedevsaddam/govalidator"
 	"net/http"
 	"net/url"
@@ -14,12 +11,10 @@ type (
 		Name string `json:"name"`
 		Email string `json:"email"`
 		Password string `json:"password"`
-
-		//requests.RequestError
 	}
 )
 
-func RegisterUserRequest(r *http.Request) (*RegisterUser,url.Values) {
+func registerUserRequest(r *http.Request) (*RegisterUser,url.Values) {
 	var registerUser RegisterUser
 
 	rules := govalidator.MapData{
@@ -43,8 +38,6 @@ func RegisterUserRequest(r *http.Request) (*RegisterUser,url.Values) {
 	}
 
 	v := govalidator.New(opts)
-
-	fmt.Println("reg user->",registerUser,"reg iser email",registerUser.Email)
 
 	return  &registerUser, v.ValidateJSON()
 }
