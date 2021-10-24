@@ -26,27 +26,28 @@ func NewAuthAPI(authSrv auth.AuthServiceInterface, conf *config.Configuration) *
 }
 
 func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
-	payload := new(signupReq)
-	defer r.Body.Close()
+	//payload := new(signupReq)
+	//defer r.Body.Close()
+	//
+	//decoder := json.NewDecoder(r.Body)
+	//decoder.Decode(&payload)
+	//
+	//fmt.Println("1 payload",payload)
 
-	decoder := json.NewDecoder(r.Body)
-	decoder.Decode(&payload)
-
-	fmt.Println("1 pauload",payload)
-
-	requestUser := &models.User{Name: payload.Name, Email: payload.Email, Password: payload.Password}
+	//requestUser := &models.User{Name: payload.Name, Email: payload.Email, Password: payload.Password}
 	result := make(map[string]interface{})
 
-	formData := authRequest.RegisterUserRequest(r)
+	userData, err := authRequest.RegisterUserRequest(r)
 
-	if formData.HasErrors() {
-		result = utility.NewValidationError(formData.ErrorBag)
+	fmt.Println(userData)
+
+	if len(err) > 0 {
+		result = utility.NewValidationError(err)
 		utility.Response(w, result,http.StatusUnprocessableEntity)
 
 		return
 	} else {
-		fmt.Println(formData)
-		utility.Response(w, formData.Email,http.StatusOK)
+		utility.Response(w, userData,http.StatusOK)
 
 		return
 	}
@@ -68,24 +69,26 @@ func (h *AuthHandler) Create(w http.ResponseWriter, r *http.Request) {
 	//	result = utility.NewHTTPError(utility.BadRequest, validateError.Error())
 	//}
 
-	requestUser.Initialize()
 
-	if h.service.IsUserAlreadyExists(r.Context(), requestUser.Email) {
-		result = utility.NewHTTPError(http.StatusUnprocessableEntity,nil)
-		utility.Response(w, result,http.StatusUnprocessableEntity)
-		return
-	}
-
-	err := h.service.Create(r.Context(), requestUser)
-
-	if err != nil {
-		result = utility.NewHTTPError(http.StatusUnprocessableEntity,nil)
-		utility.Response(w, result,http.StatusBadRequest)
-		return
-	}
-
-	result = utility.SuccessPayload(nil, "successfully registered.")
-	utility.Response(w, result,http.StatusCreated)
+	//break
+	//requestUser.Initialize()
+	//
+	//if h.service.IsUserAlreadyExists(r.Context(), requestUser.Email) {
+	//	result = utility.NewHTTPError(http.StatusUnprocessableEntity,nil)
+	//	utility.Response(w, result,http.StatusUnprocessableEntity)
+	//	return
+	//}
+	//
+	//err := h.service.Create(r.Context(), requestUser)
+	//
+	//if err != nil {
+	//	result = utility.NewHTTPError(http.StatusUnprocessableEntity,nil)
+	//	utility.Response(w, result,http.StatusBadRequest)
+	//	return
+	//}
+	//
+	//result = utility.SuccessPayload(nil, "successfully registered.")
+	//utility.Response(w, result,http.StatusCreated)
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {

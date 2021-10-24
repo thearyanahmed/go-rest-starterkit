@@ -1,8 +1,9 @@
 package auth
 
 import (
-	"encoding/json"
-	"github.com/thearyanahmed/kloudlabllc/app/requests"
+	"fmt"
+	_ "fmt"
+	_ "github.com/thearyanahmed/kloudlabllc/app/requests"
 	"github.com/thedevsaddam/govalidator"
 	"net/http"
 	"net/url"
@@ -10,15 +11,17 @@ import (
 
 type (
 	RegisterUser struct {
-		Name string
-		Email string
-		Password string //`json:"password"`
+		Name string `json:"name"`
+		Email string `json:"email"`
+		Password string `json:"password"`
 
-		requests.RequestError
+		//requests.RequestError
 	}
 )
 
-func RegisterUserRequest(r *http.Request) *RegisterUser {
+func RegisterUserRequest(r *http.Request) (*RegisterUser,url.Values) {
+	var registerUser RegisterUser
+
 	rules := govalidator.MapData{
 		"name": []string{"required", "between:3,12"},
 		"email":    []string{"required", "email"},
@@ -32,6 +35,7 @@ func RegisterUserRequest(r *http.Request) *RegisterUser {
 	}
 
 	opts := govalidator.Options{
+		Data: &registerUser,
 		Request:         r,        // request object
 		Rules:           rules,    // rules map
 		Messages:        messages, // custom message map (Optional)
@@ -40,19 +44,7 @@ func RegisterUserRequest(r *http.Request) *RegisterUser {
 
 	v := govalidator.New(opts)
 
-	var registerUser RegisterUser
+	fmt.Println("reg user->",registerUser,"reg iser email",registerUser.Email)
 
-	err := json.NewDecoder(r.Body).Decode(&registerUser)
-
-	if err != nil {
-		decodeErr := url.Values{}
-		decodeErr.Set("decode_error",err.Error())
-
-		registerUser.ErrorBag = decodeErr
-	}
-
-	e := v.Validate()
-	registerUser.ErrorBag = e
-
-	return &registerUser
+	return  &registerUser, v.ValidateJSON()
 }
