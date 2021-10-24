@@ -23,13 +23,12 @@ func InitializeRoutes(router *mux.Router, dbSession *mgo.Session, conf *config.C
 
 	authAPI := auth.NewAuthAPI(authService, conf)
 
-	// Routes
-
+	apiV1 := router.PathPrefix(BaseRoute).Subrouter()
 	//  -------------------------- Auth APIs ------------------------------------
-	router.HandleFunc(BaseRoute+"/auth/register", authAPI.Create).Methods(http.MethodPost)
-	router.HandleFunc(BaseRoute+"/auth/login", authAPI.Login).Methods(http.MethodPost)
+	apiV1.HandleFunc("/auth/register", authAPI.Create).Methods(http.MethodPost)
+	apiV1.HandleFunc("/auth/login", authAPI.Login).Methods(http.MethodPost)
 
 	// -------------------------- User APIs ------------------------------------
-	router.HandleFunc(BaseRoute+"/users/me", userAPI.Get).Methods(http.MethodGet)
-	router.HandleFunc(BaseRoute+"/users", userAPI.Update).Methods(http.MethodPatch)
+	apiV1.HandleFunc("/users/me", userAPI.Get).Methods(http.MethodGet)
+	apiV1.HandleFunc("/users", userAPI.Update).Methods(http.MethodPatch)
 }
